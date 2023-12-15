@@ -1,33 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Todo } from "types/types";
 import { v4 as uuid } from "uuid";
+import todos from "db.json";
 
-const initialState: Todo[] = [
-  {
-    id: uuid(),
-    title: "제목1",
-    contents: "내용1",
-    isDone: false,
-  },
-  {
-    id: uuid(),
-    title: "제목2",
-    contents: "내용2",
-    isDone: false,
-  },
-  {
-    id: uuid(),
-    title: "제목3",
-    contents: "내용3",
-    isDone: true,
-  },
-  {
-    id: uuid(),
-    title: "제목4",
-    contents: "내용4",
-    isDone: false,
-  },
-];
+const initialState: Todo[] = [];
 
 const todosSlice = createSlice({
   name: "todos",

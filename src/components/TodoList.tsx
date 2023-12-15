@@ -84,7 +84,6 @@ const StTitle = styled.h1`
 const StTodoWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   flex-wrap: wrap;
 `;
 
