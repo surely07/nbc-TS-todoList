@@ -11,7 +11,7 @@ type TodoListProps = {
   listIsDone: boolean;
 };
 
-export const TodoList = ({ todos, setTodos, listIsDone }: TodoListProps) => {
+const TodoList = ({ todos, setTodos, listIsDone }: TodoListProps) => {
   const handleDeleteButtonClick = (todo: Todo) => {
     Swal.fire({
       title: "정말 삭제하시겠습니까?",
@@ -74,6 +74,8 @@ export const TodoList = ({ todos, setTodos, listIsDone }: TodoListProps) => {
     </StTodoListContainer>
   );
 };
+
+export default TodoList;
 
 const StTodoListContainer = styled.div`
   margin: 50px auto;

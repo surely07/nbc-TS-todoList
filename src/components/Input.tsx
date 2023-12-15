@@ -9,7 +9,7 @@ type InputProps = {
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 };
 
-export const Input = ({ todos, setTodos }: InputProps) => {
+const Input = ({ todos, setTodos }: InputProps) => {
   const [title, setTitle] = useState<string>("");
   const [contents, setContents] = useState<string>("");
 
@@ -54,6 +54,8 @@ export const Input = ({ todos, setTodos }: InputProps) => {
     </StInputContainer>
   );
 };
+
+export default Input;
 
 const StInputContainer = styled.div`
   background-color: lightgray;

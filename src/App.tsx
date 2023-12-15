@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { GlobalStyles } from "./styles/GlobalStyles";
 import styled from "styled-components";
 import { v4 as uuid } from "uuid";
-import { Input } from "./components/Input";
-import { TodoList } from "./components/TodoList";
+import Input from "./components/Input";
+import TodoList from "./components/TodoList";
+
 import { Todo } from "./types/types";
-import { GlobalStyles } from "./styles/GlobalStyles";
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([
