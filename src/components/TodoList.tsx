@@ -1,21 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { completeTodo, deleteTodo } from "../redux/modules/todosSlice";
+import {
+  StateType,
+  __getTodos,
+  completeTodo,
+  deleteTodo,
+} from "../redux/modules/todosSlice";
 import { Button } from "../common/Button";
 
-import { RootState, Todo } from "../types/types";
-
-// type TodoListProps = {
-//   todos: Todo[];
-//   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-//   listIsDone: boolean;
-// };
+import { Todo } from "../types/types";
 
 const TodoList = ({ listIsDone }: { listIsDone: boolean }) => {
   const dispatch = useDispatch();
-  const todos = useSelector((state: RootState) => state.todosSlice);
+
+  // dispatch(__getTodos());
+  useEffect(() => {
+    dispatch(__getTodos());
+  }, [dispatch]);
+
+  const { todos, isLoading, isError } = useSelector(
+    (state: StateType) => state
+  );
+  console.log(todos);
 
   const handleDeleteButtonClick = (id: string) => {
     Swal.fire({

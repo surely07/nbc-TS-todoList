@@ -1,28 +1,74 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Todo } from "types/types";
-import { v4 as uuid } from "uuid";
-import todos from "db.json";
+import db from "db.json";
+import axios from "axios";
 
-const initialState: Todo[] = [];
+export type StateType = {
+  todos: Todo;
+  isLoading: boolean;
+  isError: boolean;
+};
+
+const initialState = {
+  todos: [],
+  isLoading: false,
+  isError: false,
+};
+
+export const __getTodos = createAsyncThunk(
+  "getTodos",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await axios.get("http://localhost:4000/todos");
+      console.log(response.data);
+      return thunkAPI.fulfillWithValue(response.data);
+    } catch (error) {
+      console.log("error:", error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 const todosSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
     addTodo: (state, action: PayloadAction<Todo>) => {
-      const newTodo = action.payload;
-      return [newTodo, ...state];
+      const newTodo: Todo = action.payload;
+      return { ...state, todos: [newTodo, ...state.todos] };
     },
     deleteTodo: (state, action: PayloadAction<string>) => {
       const id = action.payload;
-      return state.filter((item) => item.id !== id);
+      return { ...state, todos: state.todos.filter((item) => item.id !== id) };
     },
     completeTodo: (state, action: PayloadAction<string>) => {
       const id = action.payload;
-      return state.map((item) =>
-        item.id === id ? { ...item, isDone: !item.isDone } : item
-      );
+      return {
+        ...state,
+        todos: state.todos.map((item) =>
+          item.id === id ? { ...item, isDone: !item.isDone } : item
+        ),
+      };
     },
+    setTodo: (state, action) => {
+      return { ...state, todos: action.payload };
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(__getTodos.pending, (state, action) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(__getTodos.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.todos = action.payload;
+      })
+      .addCase(__getTodos.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+      });
   },
 });
 
