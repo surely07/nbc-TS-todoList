@@ -1,21 +1,21 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Todo } from "types/types";
-import db from "db.json";
+import db from "../../db.json";
 import axios from "axios";
 
 export type StateType = {
-  todos: Todo;
+  todos: Todo[];
   isLoading: boolean;
   isError: boolean;
 };
 
 const initialState = {
-  todos: [],
+  todos: db.todos,
   isLoading: false,
   isError: false,
 };
 
-export const __getTodos = createAsyncThunk(
+export const __getTodos = createAsyncThunk<Todo[], void>(
   "getTodos",
   async (payload, thunkAPI) => {
     try {
@@ -39,13 +39,16 @@ const todosSlice = createSlice({
     },
     deleteTodo: (state, action: PayloadAction<string>) => {
       const id = action.payload;
-      return { ...state, todos: state.todos.filter((item) => item.id !== id) };
+      return {
+        ...state,
+        todos: state.todos.filter((item: Todo) => item.id !== id),
+      };
     },
     completeTodo: (state, action: PayloadAction<string>) => {
       const id = action.payload;
       return {
         ...state,
-        todos: state.todos.map((item) =>
+        todos: state.todos.map((item: Todo) =>
           item.id === id ? { ...item, isDone: !item.isDone } : item
         ),
       };

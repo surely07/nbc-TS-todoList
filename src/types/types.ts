@@ -1,5 +1,7 @@
+import { StateType } from "redux/modules/todosSlice";
+
 export interface RootState {
-  todosSlice: Todo[];
+  todosSlice: StateType;
 }
 
 export type Todo = {

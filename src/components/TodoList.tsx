@@ -11,19 +11,18 @@ import {
 import { Button } from "../common/Button";
 
 import { Todo } from "../types/types";
+import { completeData, deleteData } from "../apis/api";
 
 const TodoList = ({ listIsDone }: { listIsDone: boolean }) => {
   const dispatch = useDispatch();
 
-  // dispatch(__getTodos());
   useEffect(() => {
-    dispatch(__getTodos());
+    dispatch(__getTodos() as any);
   }, [dispatch]);
 
   const { todos, isLoading, isError } = useSelector(
-    (state: StateType) => state
+    (state: { todosSlice: StateType }) => state.todosSlice
   );
-  console.log(todos);
 
   const handleDeleteButtonClick = (id: string) => {
     Swal.fire({
@@ -34,16 +33,34 @@ const TodoList = ({ listIsDone }: { listIsDone: boolean }) => {
       cancelButtonColor: "gray",
       confirmButtonText: "삭제",
       cancelButtonText: "취소",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         dispatch(deleteTodo(id));
+        try {
+          await deleteData(id);
+        } catch (error) {
+          console.log("Error:", error);
+        }
       }
     });
   };
 
-  const handleCompleteButtonClick = (id: string) => {
+  const handleCompleteButtonClick = async (id: string) => {
     dispatch(completeTodo(id));
+    try {
+      await completeData(id);
+    } catch (error) {
+      console.log("Error:", error);
+    }
   };
+
+  if (isLoading) {
+    return <div>로딩중...</div>;
+  }
+
+  if (isError) {
+    return <div>알 수 없는 문제가 발생하였습니다.</div>;
+  }
 
   return (
     <StTodoListContainer>
