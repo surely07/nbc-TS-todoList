@@ -2,20 +2,24 @@
 
 타입스크립트를 활용한 Todo List 만들기
 
+<br>
+
 ## 컴포넌트 분리
 
-### Input.tsx
+### 1. Input.tsx
 
 Todo 항목을 추가할 수 있는 Input 태그와 추가하기 버튼이 구현된 컴포넌트
 
-### TodoList.tsx
+### 2. TodoList.tsx
 
 Todo 항목이 나열되어 완료, 삭제, 취소를 할 수 있는 컴포넌트
 Working List와 Done List가 반복되어 컴포넌트로 생성하여 활용
 
-### 공용 컴포넌트
+### 3. 공용 컴포넌트
 
 반복되어 사용되는 Button.tsx를 공용 컴포넌트로 만들어서 활용
+
+<br>
 
 ## 구현사항
 
