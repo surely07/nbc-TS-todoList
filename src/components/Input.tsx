@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { addTodo } from "../redux/modules/todosSlice";
+import { addData } from "../apis/api";
 
 const Input = () => {
   const [title, setTitle] = useState<string>("");
@@ -23,6 +24,10 @@ const Input = () => {
     dispatch(addTodo(newTodo));
     setTitle("");
     setContents("");
+    const submitTodo = async () => {
+      await addData(newTodo);
+    };
+    submitTodo();
   };
 
   const handleInputTitle = (e: ChangeEvent<HTMLInputElement>) => {
