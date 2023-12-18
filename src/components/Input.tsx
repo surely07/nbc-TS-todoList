@@ -1,17 +1,14 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { v4 as uuid } from "uuid";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { addTodo } from "../redux/modules/todosSlice";
 
-import { Todo } from "../types/types";
-
-type InputProps = {
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-};
-
-export const Input = ({ todos, setTodos }: InputProps) => {
+const Input = () => {
   const [title, setTitle] = useState<string>("");
   const [contents, setContents] = useState<string>("");
+
+  const dispatch = useDispatch();
 
   const handleSubmitClick = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -23,7 +20,7 @@ export const Input = ({ todos, setTodos }: InputProps) => {
       isDone: false,
     };
 
-    setTodos([newTodo, ...todos]);
+    dispatch(addTodo(newTodo));
     setTitle("");
     setContents("");
   };
@@ -54,6 +51,8 @@ export const Input = ({ todos, setTodos }: InputProps) => {
     </StInputContainer>
   );
 };
+
+export default Input;
 
 const StInputContainer = styled.div`
   background-color: lightgray;

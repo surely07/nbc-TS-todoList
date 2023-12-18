@@ -1,47 +1,18 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { v4 as uuid } from "uuid";
-import { Input } from "./components/Input";
-import { TodoList } from "./components/TodoList";
-import { Todo } from "./types/types";
+import React from "react";
 import { GlobalStyles } from "./styles/GlobalStyles";
+import styled from "styled-components";
+import Input from "./components/Input";
+import TodoList from "./components/TodoList";
 
 function App() {
-  const [todos, setTodos] = useState<Todo[]>([
-    {
-      id: uuid(),
-      title: "제목1",
-      contents: "내용1",
-      isDone: false,
-    },
-    {
-      id: uuid(),
-      title: "제목2",
-      contents: "내용2",
-      isDone: false,
-    },
-    {
-      id: uuid(),
-      title: "제목3",
-      contents: "내용3",
-      isDone: true,
-    },
-    {
-      id: uuid(),
-      title: "제목4",
-      contents: "내용4",
-      isDone: false,
-    },
-  ]);
-
   return (
     <div>
       <GlobalStyles />
       <StHeader>Todo List</StHeader>
       <StMain>
-        <Input todos={todos} setTodos={setTodos} />
-        <TodoList todos={todos} setTodos={setTodos} listIsDone={false} />
-        <TodoList todos={todos} setTodos={setTodos} listIsDone={true} />
+        <Input />
+        <TodoList listIsDone={false} />
+        <TodoList listIsDone={true} />
       </StMain>
       <StFooter>TypeScript Todo List</StFooter>
     </div>

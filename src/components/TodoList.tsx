@@ -1,18 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  StateType,
+  __getTodos,
+  completeTodo,
+  deleteTodo,
+} from "../redux/modules/todosSlice";
 import { Button } from "../common/Button";
 
 import { Todo } from "../types/types";
 
-type TodoListProps = {
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-  listIsDone: boolean;
-};
+const TodoList = ({ listIsDone }: { listIsDone: boolean }) => {
+  const dispatch = useDispatch();
 
-export const TodoList = ({ todos, setTodos, listIsDone }: TodoListProps) => {
-  const handleDeleteButtonClick = (todo: Todo) => {
+  // dispatch(__getTodos());
+  useEffect(() => {
+    dispatch(__getTodos());
+  }, [dispatch]);
+
+  const { todos, isLoading, isError } = useSelector(
+    (state: StateType) => state
+  );
+  console.log(todos);
+
+  const handleDeleteButtonClick = (id: string) => {
     Swal.fire({
       title: "정말 삭제하시겠습니까?",
       icon: "warning",
@@ -23,23 +36,13 @@ export const TodoList = ({ todos, setTodos, listIsDone }: TodoListProps) => {
       cancelButtonText: "취소",
     }).then((result) => {
       if (result.isConfirmed) {
-        const deleteTodos: Todo[] = todos.filter((item: Todo): boolean => {
-          return item.id !== todo.id;
-        });
-        setTodos(deleteTodos);
+        dispatch(deleteTodo(id));
       }
     });
   };
 
-  const handleCompleteButtonClick = (todo: Todo) => {
-    const newTodos = todos.map((item) => {
-      if (item.id === todo.id) {
-        return { ...item, isDone: !item.isDone };
-      } else {
-        return item;
-      }
-    });
-    setTodos(newTodos);
+  const handleCompleteButtonClick = (id: string) => {
+    dispatch(completeTodo(id));
   };
 
   return (
@@ -47,8 +50,8 @@ export const TodoList = ({ todos, setTodos, listIsDone }: TodoListProps) => {
       <StTitle>{listIsDone ? "Done..!" : "Working.."}</StTitle>
       <StTodoWrapper>
         {todos
-          .filter((todo) => todo.isDone === listIsDone)
-          .map((todo) => {
+          .filter((todo: Todo) => todo.isDone === listIsDone)
+          .map((todo: Todo) => {
             return (
               <StTodo key={todo.id}>
                 <div>
@@ -56,13 +59,12 @@ export const TodoList = ({ todos, setTodos, listIsDone }: TodoListProps) => {
                   <p>{todo.contents}</p>
                 </div>
                 <div>
-                  <Button onClick={() => handleCompleteButtonClick(todo)}>
+                  <Button onClick={() => handleCompleteButtonClick(todo.id)}>
                     {listIsDone ? "취소" : "완료"}
                   </Button>
-
                   <Button
                     $backgroundColor="gray"
-                    onClick={() => handleDeleteButtonClick(todo)}
+                    onClick={() => handleDeleteButtonClick(todo.id)}
                   >
                     삭제
                   </Button>
@@ -74,6 +76,8 @@ export const TodoList = ({ todos, setTodos, listIsDone }: TodoListProps) => {
     </StTodoListContainer>
   );
 };
+
+export default TodoList;
 
 const StTodoListContainer = styled.div`
   margin: 50px auto;
@@ -88,14 +92,13 @@ const StTitle = styled.h1`
 const StTodoWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   flex-wrap: wrap;
 `;
 
 const StTodo = styled.div`
   border: 2px solid lightcoral;
-  width: 48%;
-  height: 100px;
+  width: 370px;
+  height: 120px;
   padding: 15px;
   margin: 10px;
   border-radius: 0.7rem;
