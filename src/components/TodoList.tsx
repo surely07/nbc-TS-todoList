@@ -1,28 +1,25 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  StateType,
-  __getTodos,
-  completeTodo,
-  deleteTodo,
-} from "../redux/modules/todosSlice";
+import { useDispatch } from "react-redux";
 import { Button } from "../common/Button";
-
 import { Todo } from "../types/types";
-import { completeData, deleteData } from "../apis/api";
+import { completeData, deleteData, getData } from "../apis/todos";
+import { useQuery } from "@tanstack/react-query";
+import { deleteTodo, completeTodo } from "../redux/modules/todosSlice";
 
 const TodoList = ({ listIsDone }: { listIsDone: boolean }) => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(__getTodos() as any);
-  }, [dispatch]);
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["todos"],
+    queryFn: getData,
+  });
+  console.log(data);
 
-  const { todos, isLoading, isError } = useSelector(
-    (state: { todosSlice: StateType }) => state.todosSlice
-  );
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const handleDeleteButtonClick = (id: string) => {
     Swal.fire({
@@ -35,9 +32,10 @@ const TodoList = ({ listIsDone }: { listIsDone: boolean }) => {
       cancelButtonText: "취소",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        dispatch(deleteTodo(id));
         try {
+          dispatch(deleteTodo(id));
           await deleteData(id);
+          refetch();
         } catch (error) {
           console.log("Error:", error);
         }
@@ -45,10 +43,11 @@ const TodoList = ({ listIsDone }: { listIsDone: boolean }) => {
     });
   };
 
-  const handleCompleteButtonClick = async (id: string) => {
+  const handleCompleteButtonClick = async (id: string, isDone: boolean) => {
     dispatch(completeTodo(id));
     try {
-      await completeData(id);
+      await completeData(id, isDone);
+      refetch();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -66,7 +65,7 @@ const TodoList = ({ listIsDone }: { listIsDone: boolean }) => {
     <StTodoListContainer>
       <StTitle>{listIsDone ? "Done..!" : "Working.."}</StTitle>
       <StTodoWrapper>
-        {todos
+        {data
           .filter((todo: Todo) => todo.isDone === listIsDone)
           .map((todo: Todo) => {
             return (
@@ -76,7 +75,11 @@ const TodoList = ({ listIsDone }: { listIsDone: boolean }) => {
                   <p>{todo.contents}</p>
                 </div>
                 <div>
-                  <Button onClick={() => handleCompleteButtonClick(todo.id)}>
+                  <Button
+                    onClick={() =>
+                      handleCompleteButtonClick(todo.id, todo.isDone)
+                    }
+                  >
                     {listIsDone ? "취소" : "완료"}
                   </Button>
                   <Button

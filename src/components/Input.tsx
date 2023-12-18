@@ -2,32 +2,45 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import { v4 as uuid } from "uuid";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
+import { addData } from "../apis/todos";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Todo } from "../types/types";
 import { addTodo } from "../redux/modules/todosSlice";
-import { addData } from "../apis/api";
 
 const Input = () => {
   const [title, setTitle] = useState<string>("");
   const [contents, setContents] = useState<string>("");
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: addData,
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos" as never);
+    },
+  });
 
   const dispatch = useDispatch();
 
   const handleSubmitClick = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
-    const newTodo = {
+    const newTodo: Todo = {
       id: uuid(),
       title: title,
       contents: contents,
       isDone: false,
     };
 
+    mutation.mutate(newTodo);
+
     dispatch(addTodo(newTodo));
     setTitle("");
     setContents("");
-    const submitTodo = async () => {
-      await addData(newTodo);
-    };
-    submitTodo();
+    // const submitTodo = async () => {
+    //   await addData(newTodo);
+    // };
+    // submitTodo();
   };
 
   const handleInputTitle = (e: ChangeEvent<HTMLInputElement>) => {
