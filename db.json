@@ -10,19 +10,19 @@
       "id": "3",
       "title": "제목3",
       "contents": "내용3",
-      "isDone": true
-    },
-    {
-      "id": "4ade1039-90a3-4e8e-873f-a420f24ff105",
-      "title": "ㅇㅇㅇ",
-      "contents": "ㅇㅇㅇㅇㅇ",
       "isDone": false
     },
     {
       "id": "2ea5057f-383d-4bfe-b4b9-5135dc18ef29",
       "title": "됐다",
       "contents": "json서버 연결 완료",
-      "isDone": false
+      "isDone": true
+    },
+    {
+      "id": "57053b8a-c08d-4adb-b0b8-28dae92626e7",
+      "title": "휴",
+      "contents": "왜안돼?",
+      "isDone": true
     }
   ]
 }
